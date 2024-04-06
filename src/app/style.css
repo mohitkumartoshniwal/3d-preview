@@ -1,0 +1,36 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  overflow: hidden;
+}
+
+.experience {
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.model-preview-overlay {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1005; /* Ensure it's above other elements */
+}
+
+.loading-text {
+  font-size: 5rem;
+  font-weight: bold;
+  color: white;
+}

@@ -1,41 +1,110 @@
 {
-  "name": "3d-loader",
-  "displayName": "3d-loader",
-  "description": "",
+  "name": "3d-preview",
+  "displayName": "3d-preview",
+  "description": "Preview 3d models inside Vscode",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.85.0"
   },
   "categories": [
-    "Other"
+    "Visualization"
   ],
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
+    "customEditors": [
+      {
+        "viewType": "3d-preview.viewer",
+        "displayName": "3D Preview",
+        "selector": [
+          {
+            "filenamePattern": "*.{glb,gltf,fbx}"
+          }
+        ],
+        "priority": "default"
+      }
+    ],
     "commands": [
       {
-        "command": "3d-loader.helloWorld",
-        "title": "Hello World"
+        "command": "3d-preview.openInTextEditor",
+        "title": "Open in Text Editor",
+        "category": "3d Preview",
+        "icon": "$(notebook-open-as-text)"
+      },
+      {
+        "command": "3d-preview.showPreview",
+        "title": "Show Preview",
+        "category": "3d Preview",
+        "icon": "$(open-preview)"
+      },
+      {
+        "command": "3d-preview.openInViewer",
+        "title": "Open in 3d Preview",
+        "category": "3d Preview",
+        "icon": "$(notebook-render-output)"
       }
-    ]
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "3d-preview.openInTextEditor",
+          "when": "(resourceExtname =~ /.(gltf)/) && activeCustomEditorId == '3d-preview.viewer' && activeEditorIsNotPreview == false",
+          "group": "navigation"
+        },
+        {
+          "command": "3d-preview.showPreview",
+          "when": "(resourceExtname =~ /.(glb|gltf|fbx)/) && activeEditor == 'workbench.editors.files.textFileEditor'",
+          "group": "navigation"
+        },
+        {
+          "command": "3d-preview.openInViewer",
+          "when": "(resourceExtname =~ /.(glb|gltf|fbx)/) && activeEditor == 'workbench.editors.files.textFileEditor'",
+          "group": "navigation"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "3d-preview.openInTextEditor",
+          "when": "(resourceExtname == '.gltf') && activeCustomEditorId == '3d-preview.viewer'"
+        },
+        {
+          "command": "3d-preview.showPreview",
+          "when": "false"
+        },
+        {
+          "command": "3d-preview.openInViewer",
+          "when": "(resourceExtname =~ /.(glb|gltf|fbx)/) && activeEditor == 'workbench.editors.files.textFileEditor'"
+        }
+      ]
+    }
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint",
-    "lint": "eslint src --ext ts",
-    "test": "vscode-test"
+    "vscode:prepublish": "rimraf ./out && npm run package",
+    "compile": "rimraf ./out && node ./build.mjs",
+    "package": "cross-env NODE_ENV=production node ./build.mjs",
+    "esbuild-watch": "node ./build.mjs --watch",
+    "watch": "",
+    "deploy": "vsce publish"
   },
   "devDependencies": {
-    "@types/vscode": "^1.85.0",
     "@types/mocha": "^10.0.6",
     "@types/node": "18.x",
+    "@types/three": "^0.161.1",
+    "@types/vscode": "^1.85.0",
+    "@types/vscode-webview": "^1.57.5",
     "@typescript-eslint/eslint-plugin": "^6.19.1",
     "@typescript-eslint/parser": "^6.19.1",
-    "eslint": "^8.56.0",
-    "typescript": "^5.3.3",
     "@vscode/test-cli": "^0.0.4",
-    "@vscode/test-electron": "^2.3.9"
+    "@vscode/test-electron": "^2.3.9",
+    "cross-env": "^7.0.3",
+    "esbuild": "^0.20.0",
+    "eslint": "^8.56.0",
+    "rimraf": "^5.0.5",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@vscode/vsce": "^2.24.0",
+    "three": "^0.161.0",
+    "tweakpane": "^4.0.3"
   }
 }

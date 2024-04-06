@@ -1,25 +1,67 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
+import {
+  ExtensionContext,
+  OutputChannel,
+  ViewColumn,
+  commands,
+  window,
+} from "vscode";
+import { Viewer } from "./viewer";
+import { registerDevToolCommand } from "./register-devtools";
+import { APPLICATION_CONSTANTS } from "./constants";
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
+export function activate(context: ExtensionContext) {
+  let openPreviewCommand = commands.registerCommand(
+    APPLICATION_CONSTANTS.openPreviewCommand,
+    () => {
+      const editor = window.activeTextEditor;
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "3d-loader" is now active!');
+      commands.executeCommand(
+        "vscode.openWith",
+        editor?.document?.uri,
+        APPLICATION_CONSTANTS.viewTypeId,
+        {
+          preview: true,
+          viewColumn: ViewColumn.Beside,
+        }
+      );
+    }
+  );
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('3d-loader.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from 3d-loader!');
-	});
+  let openInViewer = commands.registerCommand(
+    APPLICATION_CONSTANTS.openInViewerCommand,
+    () => {
+      const editor = window.activeTextEditor;
 
-	context.subscriptions.push(disposable);
+      commands.executeCommand(
+        "vscode.openWith",
+        editor?.document?.uri,
+        APPLICATION_CONSTANTS.viewTypeId,
+        {
+          preview: false,
+          viewColumn: ViewColumn.Active,
+        }
+      );
+    }
+  );
+
+  let openInTextEditorCommand = commands.registerCommand(
+    APPLICATION_CONSTANTS.openInTextEditorCommand,
+    () => {
+      const editor = window.activeTextEditor;
+
+      commands.executeCommand(
+        "workbench.action.reopenTextEditor",
+        editor?.document?.uri
+      );
+    }
+  );
+
+  context.subscriptions.push(openPreviewCommand);
+  context.subscriptions.push(openInViewer);
+  context.subscriptions.push(openInTextEditorCommand);
+
+  context.subscriptions.push(Viewer.register(context));
+  registerDevToolCommand(context);
 }
 
 // This method is called when your extension is deactivated
