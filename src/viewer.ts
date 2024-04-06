@@ -110,7 +110,8 @@ export class Viewer implements CustomReadonlyEditorProvider<Doc> {
       <body>
         <canvas class="experience"></canvas>
         <div class="model-preview-overlay">
-          <div class="loading-text">Loading...</div>
+          <div class="loader-container"><span class="loader"></span></div>
+          <div class="error-message">Something went wrong</div>
         </div>
         <script type="module" nonce="${nonce}" src="${js}"></script>
       </body>

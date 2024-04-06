@@ -29,7 +29,10 @@ const vscode: WebviewApi<unknown> = acquireVsCodeApi();
 vscode.postMessage({ type: APPLICATION_CONSTANTS.READY });
 
 const overlay = document.querySelector(".model-preview-overlay") as HTMLElement;
-const loadingText = document.querySelector(".loading-text") as HTMLElement;
+const loaderContainer = document.querySelector(
+  ".loader-container"
+) as HTMLElement;
+const errorMessage = document.querySelector(".error-message") as HTMLElement;
 
 const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderPath(
@@ -38,13 +41,8 @@ dracoLoader.setDecoderPath(
 
 const loadingManager = new LoadingManager();
 
-loadingManager.onLoad = () => {
-  overlay.style.display = "none";
-};
-
-loadingManager.onError = () => {
-  loadingText.textContent = "Something went wrong ";
-};
+// loadingManager.onError = () => {
+// };
 
 // ADD LOADERS HERE
 const gltfLoader = new GLTFLoader(loadingManager);
@@ -177,7 +175,7 @@ renderer.setAnimationLoop((time) => {
   renderer.render(scene, camera);
 });
 
-window.addEventListener("message", (event) => {
+window.addEventListener("message", async (event) => {
   const message = event.data;
   const { type } = message;
   const url = URL.createObjectURL(new Blob([event.data.blob as Uint8Array]));
@@ -185,26 +183,22 @@ window.addEventListener("message", (event) => {
   // ADD LOADERS HANDLE LOGIC HERE
   try {
     if (type === MODEL_TYPES.FBX) {
-      fbxLoader.load(url, (fbxModel) => {
-        // model = fbxModel.children[0];
-        model = fbxModel;
-        scene.add(model);
-        addAnimationsToFolder({ model: fbxModel, type });
-      });
+      const fbxModel = await fbxLoader.loadAsync(url);
+      // model = fbxModel.children[0];
+      model = fbxModel;
+      scene.add(model);
+      addAnimationsToFolder({ model: fbxModel, type });
     } else if ([MODEL_TYPES.GLB, MODEL_TYPES.GLTF].includes(type)) {
-      gltfLoader.load(url, (gltf) => {
-        model = gltf.scene;
-        scene.add(model);
-
-        console.log(gltf.scene);
-        console.log({ model });
-
-        addAnimationsToFolder({ model: gltf, type });
-      });
+      const gltfModel = await gltfLoader.loadAsync(url);
+      model = gltfModel.scene;
+      scene.add(model);
+      addAnimationsToFolder({ model: gltfModel, type });
     }
+    overlay.style.opacity = "0";
+    overlay.style.pointerEvents = "none";
   } catch (error) {
-    loadingText.textContent =
-      "Somethin went wrong while trying to load the model";
+    loaderContainer.style.display = "none";
+    errorMessage.style.display = "block";
   }
 });
 

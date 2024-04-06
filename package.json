@@ -1,7 +1,10 @@
 {
   "name": "3d-preview",
-  "displayName": "3d-preview",
+  "displayName": "3d Preview",
   "description": "Preview 3d models inside Vscode",
+  "icon": "assets/logo.png",
+  "publisher": "mohitkumartoshniwal",
+  "repository": "https://github.com/mohitkumartoshniwal/3d-preview",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.85.0"

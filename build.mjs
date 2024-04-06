@@ -1,9 +1,11 @@
 import { build, context } from "esbuild";
 
+const isProduction = process.env.NODE_ENV === "production";
+
 const baseConfig = {
   bundle: true,
-  minify: process.env.NODE_ENV === "production",
-  sourcemap: process.env.NODE_ENV !== "production",
+  minify: isProduction,
+  sourcemap: !isProduction,
 };
 
 /** @type {import('esbuild').BuildOptions} */
