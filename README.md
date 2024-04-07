@@ -12,7 +12,7 @@ You can install the 3d Preview extension directly from the [VSCode Marketplace](
 
 ## Features
 
-- View 3D models with GLB, GLTF(only Embedded supported for now) and FBX formats
+- View 3D models with GLB, GLTF(all data needs to be in one file) and FBX formats
 - Play Animations
 
 ## Roadmap
