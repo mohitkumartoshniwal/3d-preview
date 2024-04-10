@@ -21,3 +21,7 @@ You can install the 3d Preview extension directly from the [VSCode Marketplace](
 - Add shadows and center the model
 
 Feel free to [create an issue](https://github.com/mohitkumartoshniwal/3d-preview/issues) for feature requests or suggestions.
+
+## ⭐️ Show Your Support
+
+Please give a ⭐️ if this project helped you!
